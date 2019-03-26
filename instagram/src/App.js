@@ -1,24 +1,45 @@
-import React, { Component } from 'react';
-	import SearchBar from './components/SearchBar/SearchBar';
-	import PostContainer from './components/PostContainer/PostContainer';
-	import dummyData from './components/dummyData';
+import React from 'react';
 	import './App.css';
-	import InstaFeed from './components/InstaFeed/InstaFeed';
+	import PostContainer from './components/PostContainer/PostContainer';
+	import SearchBar from './components/SearchBar/SearchBarContainer';
+	import dummyData from './dummy-data';
 	
-	class App extends Component {
+	class App extends React.Component {
 	  constructor() {
 	    super();
 	    this.state = {
-	      dummyData: dummyData
+	     dummyData: [],
+	     searchData: []
 	    };
 	  }
 	
+	  componentDidMount() {
+	    this.setState({
+	      dummyData: dummyData
+	    })
+	  }
+	
+	  searchBarHandler = e => {
+	    const post = this.state.dummyData.filter( post => {
+	      if (post.username.includes(e.target.value)) {
+	        return post
+	      }
+	    });
+	    this.setState({
+	      searchData: post
+	    })
+	
+	
+	  }
 	
 	  render() {
 	    return (
 	      <div className="App">
-	        <SearchBar />
-	        <InstaFeed dummyData={this.state.dummyData} />
+	       <SearchBar searchPosts={this.searchBarHandler}/>
+	       <PostContainer postData={
+	         this.state.searchData.length > 0 ?
+	         this.state.searchData :
+	         this.state.dummyData} />
 	      </div>
 	    );
 	  }
