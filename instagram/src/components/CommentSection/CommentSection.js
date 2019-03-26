@@ -1,74 +1,125 @@
-import React from 'react';
-	import { Form, Input } from 'reactstrap';
-	import * as Icon from 'react-feather';
-	import './CommentSection.css';
+import React from 'react'
+	import styled from 'styled-components'
+	import PropTypes from 'prop-types'
+	import Comment from './Comment'
 	
+	const CommentSectionContainer = styled.div`
+	    padding: 15px;
+	`
+	const LikesCommentsIcons = styled.div`
+	    margin-bottom: 15px;
+	`
+	const I = styled.div`
+	    margin-right: 20px;
+	`
+	const LikesCommentsStats = styled.div`
+	    font-size: 1.5rem;
+	    font-weight: 700;
+	    margin-bottom: 10px;
+	`
+	const LikesCommentsStatistic = styled.p`
+	    margin-bottom: 5px;
+	`
 	class CommentSection extends React.Component {
-	    constructor(props) {
-	        super(props);
-	        this.state = { 
-	            comments: props.comments,
-	            likes: props.likes,
-	            comment: ''
-	         }
+	  constructor(props) {
+	    super(props)
+	    this.state = {
+	      comments: [],
+	      currentComment: '',
+	      commentNumber: 0,
+	      likes: 0,
+	      notLiked: false,
+	      userProfile: props.userProfile
 	    }
+	  }
+	  componentDidMount = () => {
+	    this.setState({
+	      comments: this.props.comments,
+	      currentComment: '',
+	      commentNumber: this.props.comments.length,
+	      likes: this.props.likes,
+	      notLiked: true
+	    })
+	  }
+	  handleChange = (event) => {
+	    const { name, value } = event.target
+	    this.setState({
+	      [name]: value,
+	    })
+	  }
+	  toggleLike = () => {
+	    this.setState(previousState => { 
+	      return {
+	        notLiked: !previousState.notLiked,
+	      }
+	    })
+	    {this.state.notLiked ? 
+	    this.setState(previousState => {
+	      return {
+	        likes: previousState.likes +=1,
+	      }
+	    })
+	    :
+	    this.setState(previousState => {
+	      return {
+	        likes: previousState.likes -=1,
+	      }
+	    })
+	    }
+	  }
+	  addComment = (event) => {
+	    event.preventDefault()
+	    const newCommentList = [...this.state.comments, {username: this.state.userProfile, text: this.state.currentComment}]
+	    this.setState({
+	      comments: newCommentList,
+	      currentComment: '',
+	      commentNumber: newCommentList.length
+	    })
+	  }
 	
-	    addNewComment = e => {
-	        e.preventDefault();
-	        this.serState({
-	            comments: [
-	                ...this.state.comments,
-	                {
-	                    text: this.state.comment,
-	                    username: 'Groucho Marx'
-	                }
-	            ],
-	            comment: ' '
-	        })
-	    }
+	  render(props) {
+	    return (
+	      <CommentSectionContainer>
+	        <div className="likes-comments">
+	          <LikesCommentsIcons>
+	            <I className="far fa-heart fa-2x" onClick={this.toggleLike}></I>
+	            <I className="far fa-comment fa-2x" onClick={this.commentInputFocus}></I>
+	          </LikesCommentsIcons>
+	          <LikesCommentsStats>
+	            <LikesCommentsStatistic>{this.state.likes} likes</LikesCommentsStatistic>
+	            <LikesCommentsStatistic>{this.state.commentNumber} comments</LikesCommentsStatistic>
+	          </LikesCommentsStats>
 	
-	    handleInputChange = e => {
-	        this.serState({
-	            comment: e.target.value
-	        })
-	    }
+	        </div>
+	        {this.state.comments.map(comment => {
+	          return <Comment username={comment.username} text={comment.text}/>
+	        })}
+	        <form>
+	          <input 
+	          type="text"
+	          name="currentComment"
+	          value={this.state.currentComment}
+	          onChange={this.handleChange}
+	          onSubmit={this.addComment}
+	          />
+	          <button onClick={this.addComment} disabled={this.state.currentComment === '' ? true : false} >Submit</button>
 	
-	    increaseLikes = () => {
-	        this.setState({
-	          likes:this.state.likes + 1
-	        })
-	    }
+	        </form>
 	
-	    render() { 
-	        return ( 
-	            <div className='commentSection'>
-	             <div className='likeAndComment'>
-	                <Icon.Heart 
-	                className='icons'
-	                onClick={this.increaedLikes} />
-	                <Icon.MessageCircle className='icons' />
-	             </div>
-	              <p>{this.state.likes} likes</p>
-	              {this.state.comments.map((comment,i) => {
-	                return (
-	                 <div className='comment' key={i}>
-	                     <h3>{comment.username}</h3>
-	                     <p>{comment.text}</p>
-	                 </div>
-	                )
-	            })}
-	         <Form onSubmit={this.addNewComment}>
-	            <Input 
-	                name='comment'
-	                placeholder='Add a comment...'
-	                type='text'
-	                onChange={this.handleInputChange}
-	                value={this.state.comment}
-	                />
-	         </Form>
-	         </div>
-	         );
-	    }
+	      </CommentSectionContainer>
+	
+	    )
+	  }
+	
 	}
 	
-	export default CommentSection;
+	CommentSection.propTypes = {
+	  comments: PropTypes.arrayOf(
+	    PropTypes.shape({
+	      username: PropTypes.string,
+	      text: PropTypes.string,
+	    })
+	  )
+	}
+	
+	export default CommentSection

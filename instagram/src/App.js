@@ -1,48 +1,56 @@
-import React from 'react';
+import React, { Component } from 'react';
+	import './components/Authentication/Authenticate'
+	import PostsPage from './components/PostContainer/Post'
 	import './App.css';
-	import PostContainer from './components/PostContainer/PostContainer';
-	import SearchBar from './components/SearchBar/SearchBarContainer';
-	import dummyData from './dummy-data';
-	
-	class App extends React.Component {
-	  constructor() {
-	    super();
+	import dummyData from './dummyData';
+	import Authenticate from './components/Authentication/Authenticate';
+	class App extends Component {
+	  constructor(props) {
+	    super(props)
 	    this.state = {
-	     dummyData: [],
-	     searchData: []
-	    };
+	      posts: [],
+	      displayedPosts: [],
+	      searchValue: ''
+	    }
 	  }
-	
-	  componentDidMount() {
+	  componentDidMount = () => {
 	    this.setState({
-	      dummyData: dummyData
+	        posts: dummyData,
+	        displayedPosts: dummyData
 	    })
 	  }
-	
-	  searchBarHandler = e => {
-	    const post = this.state.dummyData.filter( post => {
-	      if (post.username.includes(e.target.value)) {
-	        return post
-	      }
-	    });
+	  searchPosts = event => {
+	    const { name, value } = event.target
 	    this.setState({
-	      searchData: post
+	      [name]: value
 	    })
-	
-	
+	    if (value.length > 0) {
+	      const displayedPostArray = this.state.posts.filter(post => {
+	        if (post.username.toLowerCase().includes(value.toLowerCase())) {
+	          return true;
+	        }
+	      })
+	      this.setState({
+	        displayedPosts: displayedPostArray
+	      })
+	    } 
+	    else {
+	      this.setState({
+	        displayedPosts: this.state.posts
+	      })
+	    }
 	  }
-	
 	  render() {
 	    return (
-	      <div className="App">
-	       <SearchBar searchPosts={this.searchBarHandler}/>
-	       <PostContainer postData={
-	         this.state.searchData.length > 0 ?
-	         this.state.searchData :
-	         this.state.dummyData} />
-	      </div>
+	      <PostsPage
+	      logout={this.props.logout}
+	      searchValue={this.state.searchValue}
+	      searchPosts={this.searchPosts}
+	      displayedPosts={this.state.displayedPosts}
+	      userProfile={localStorage.getItem('username')}
+	      />
 	    );
 	  }
 	}
 	
-	export default App;
+	export default Authenticate(App);
