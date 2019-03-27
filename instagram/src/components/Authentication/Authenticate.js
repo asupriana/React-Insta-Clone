@@ -1,32 +1,30 @@
-import React, { Component } from 'react'
-	import Login from '../Login/Login';
+import React from 'react';
 	
-	const Authenticate = App =>
-	  class extends Component {
-	    constructor() {
-	      super()
-	      this.state = {
-	        loggedIn: false,
-	      }
-	    }
-	    componentDidMount() {
-	      const user = localStorage.getItem('username')
-	      user ? this.setState({ loggedIn: true }) : this.setState({ loggedIn: false })
-	    }
-	    logout = (event) => {
-	      event.preventDefault()
-	      localStorage.clear()
-	      this.setState({ loggedIn: false })
-	    }
-	    render() {
-	      return(
-	        <React.Fragment>
-	          {this.state.loggedIn ? <App logout={this.logout}/> : <Login />}
-	        </React.Fragment>
-	      )
-	    }
-	  };
-	
-	
-	
-	export default Authenticate
+const Authenticate = App => Login =>
+	class extends React.Component {
+		constructor(props) {
+			super(props);
+			this.state = {
+				loggedIn: false
+			}
+		}
+
+		componentDidMount() {
+			if (!localStorage.getItem('user')) {
+				console.log('Post')
+				this.setState({ loggedIn: false});
+			} else {
+				console.log('Login')
+				this.setState({ loggedIn: true})
+			}
+		}
+
+		render() { 
+			if (this.state.loggedIn) {
+				return <App />
+			}  
+			return <Login />;
+	}
+}; 
+
+export default Authenticate;

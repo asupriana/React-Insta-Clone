@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.8.2",
+    "react": "^16.8.5",
     "react-dom": "^16.8.2",
     "react-feather": "^1.1.6",
     "react-scripts": "2.1.5",
+    "react-strap": "^0.0.1",
+    "reactstrap": "^7.1.0",
+    "strap": "^0.1.0",
     "styled-components": "^4.1.3"
   },
   "scripts": {

@@ -5,10 +5,10 @@ import React from 'react';
 	
 	const InstaFeed = (props) => {
 	    return (
-	        <div className="insta-feed">
+	        <div className='insta-feed'>
 	            <div>
 	                {props.dummyData.map(postContainer => (
-	                    <div className="post-card">
+	                    <div className='post-card'>
 	                        <PostContainer key={postContainer.timestamp} postContainer={postContainer} />
 	                        <CommentSection key={postContainer.timestamp} postContainer={postContainer} />
 	                    </div>

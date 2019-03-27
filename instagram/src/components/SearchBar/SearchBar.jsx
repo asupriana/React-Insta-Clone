@@ -6,7 +6,7 @@ import React from 'react';
 	        <div className="search-bar">
 	            <div className="search-bar-container-left">
 	                <a href="https://instagram.com"><i className="fab fa-instagram"></i></a>
-	                <h2 className="search-bar-heading">Instagram</h2>
+	                <h2 className="search-bar-heading">Fake Instagram</h2>
 	            </div>
 	            <div className="search-bar-container-middle">
 	                <input className="search-bar-user-input" type="text" placeholder="Search"/>

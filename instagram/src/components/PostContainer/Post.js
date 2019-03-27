@@ -1,32 +1,52 @@
-import React from 'react'
-	import styled from 'styled-components'
-	import PropTypes from 'prop-types'
-	import SearchBar from '../SearchBar/SearchBar'
-	import PostContainer from './PostContainer'
-	import '../../App.css'
+import React from 'react';
+	import dummyData from '../dummyData';
+	import SearchBar from '../SearchBar/SearchBar';
+	import PostContainer from '../PostContainer/PostContainer';
+	import { Button } from 'reactstrap';
 	
-	const MainContentContainer = styled.div`
-	    padding-top: 60px;
-	    background-color: #F9F9F9;
-	`
-	const Post = props => {
-	  return (
-	    <div className="app-container">
-	        <SearchBar onChange={props.searchPosts} value={props.searchValue} logout={props.logout}/>
-	        <MainContentContainer>
-	            {props.displayedPosts.map(post => {
-	            return <PostContainer post={post} userProfile={props.userProfile}/>
-	        })}        
-	        </MainContentContainer>
-	  </div>
-	  )
+	class Post extends React.Component {
+	  constructor () {
+	    super();
+	    this.state = {
+	      dummyData: [],
+	      searchData: []
+	    };
+	  }
+	
+	componentDidMount() {
+	  this.setState({
+	    dummyData: dummyData
+	  })
 	}
 	
-	Post.propTypes = {
-	  searchPosts: PropTypes.func,
-	  searchValue: PropTypes.string,
-	  logout: PropTypes.func,
-	  userProfile: PropTypes.string
+	searchBarHandler = event => {
+	  const posts = this.state.dummyData.filter( post => {
+	    if (post.username.includes(event.target.value)) {
+	      return post;
+	    }
+	  });
+	  this.setState({ searchData: posts });
+	};
+	
+	logOut = e => {
+	  e.preventDefault();
+	  const user = this.state.username;
+	  localStorage.removeItem('user', user);
+	  window.location.reload();
 	}
 	
-	export default Post
+	  render() {
+	    return (
+	      <div className="App">
+	        <SearchBar searchPosts={this.searchBarHandler}/>
+	        <PostContainer post={
+	          this.state.searchData.length > 0 ?
+	          this.state.searchData :
+	          this.state.dummyData} />
+	        <Button type="submit" onClick={this.logOut}>Logout</Button>
+	      </div>
+	    );
+	  }
+	}
+	
+	export default Post; 
